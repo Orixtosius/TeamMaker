@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.position import Position
+from src.positions.football_positions import FootballPositions
 
 @dataclass
 class PositionEnsembler:
@@ -22,6 +22,6 @@ class PositionEnsembler:
 
     def get_position(self, position_name):
         if position_name in self.positions:
-            return Position(position_name)
+            return FootballPositions(position_name)
         else:
             raise ValueError(f"Given position of {position_name} does not exist in position list.")

@@ -1,5 +1,5 @@
 import pytest
-from src.player import Player
+from src.players.football_player import Player
 from src.position_ensemble import PositionEnsembler
 
 
