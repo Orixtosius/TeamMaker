@@ -1,64 +1,46 @@
-from abc import ABC, abstractmethod
-from functools import wraps
+from abc import ABC
 from src.players.football_player import Player
-from src.positions.abstract_position import Position
+from src.enums.positions import FootballPositions
+from src.validations.team_validation import TeamValidator
 
 
 class AbstractTeam(ABC):
 
-    @abstractmethod
-    def __init__(self, team_name, positions):
+    def __init__(self, team_name: str) -> None:
         self.team_name = team_name
-        self.positions = positions
         self.team_score = dict()
-        self.rooster = {p: list() for p in self.positions}
-        self.total_point = 0
-        self.total_player_count = 0
+        self.rooster: dict[FootballPositions, list] = dict()
+        self.team_size = 0
 
-    def validate_player_type(method):
-        @wraps(method)
-        def inner(*args, **kwargs):
-            if isinstance(args[1], Player):
-                method(*args, **kwargs)
-                return True
-            else:
-                print(f"Given input is not a player. It has {type(args[1])} data type.")
-                return False
-
-    @abstractmethod
-    @validate_player_type
-    def add_player(self, player: Player, position: Position):
-        position_name = position.get_position_name()
-        if player not in self.rooster[position_name]:
-            self.rooster[position_name].append(player)
-            player_score = player.get_score(position_name)
-            self.update_team_stats(position_name, player_score)
+    @TeamValidator()
+    def add_player(self, player: Player, position: FootballPositions) -> None:
+        if player not in self.rooster[position]:
+            self.rooster[position].append(player)
+            player_score = player.get_score(position)
+            self._update_team_stats(position, player_score)
         else:
             print("The player is already in the team.")
 
-    @abstractmethod
-    @validate_player_type
-    def remove_player(self, player: Player):
+    @TeamValidator()
+    def remove_player(self, player: Player) -> None:
         for position_name in self.rooster.keys():
             if player in self.rooster[position_name]:
                 self.rooster[position_name].remove(player)
                 player_score = player.get_score(position_name)
-                self.update_team_stats(position_name, player_score)
+                self._update_team_stats(position_name, player_score)
                 break
         else:
             print("The player is not in the team.")
 
-    @abstractmethod
-    def update_team_stats(self, action: str, position_name, position_score):
-        if action == 'add':
-            count = 1
-            score = position_score
-        elif action == 'remove':
-            count = -1
-            score = -position_score
-
-        else:
-            raise ValueError(f"Given <{action}> is not understood. Allowed actions are <add> or <remove>.")
-        self.total_player_count += count
+    def _update_team_stats(self, action: str, position_name, position_score) -> None:
+        count, score = self._get_values(action, position_score)
+        self.team_size += count
         self.team_score[position_name] += score
         self.total_point += score
+
+    def _get_values(self, action: str, position_score: float) -> tuple[int, float]:
+        if action == 'add':
+            count = 1
+        else:
+            count = -1
+        return count, count*position_score

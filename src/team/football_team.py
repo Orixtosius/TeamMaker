@@ -17,8 +17,8 @@ class FootballTeam(AbstractTeam):
     def remove_player(self, Player):
         super().remove_player(Player)
 
-    def update_team_stats(self, action: str, position_name, position_score):
-        super().update_team_stats(action, position_name, position_score)
+    def _update_team_stats(self, action: str, position_name, position_score):
+        super()._update_team_stats(action, position_name, position_score)
 
     def constrain_goalkeeper(self, position: FootballPositions):
         position_name = position.get_position_name()

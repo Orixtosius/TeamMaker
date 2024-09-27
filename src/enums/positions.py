@@ -1,7 +1,6 @@
 from enum import Enum
 
-
-class Positions(Enum):
+class FootballPositions(Enum):
     GOALKEEPER = 0
     DEFENDER = 1
     MIDFIELDER = 2
