@@ -1,31 +1,23 @@
-from src.team.abs_team import AbstractTeam
 from dataclasses import dataclass
-from src.positions.football_positions import FootballPositions
+from src.team.abs_team import AbstractTeam
+from src.enums.positions import FootballPositions
+from src.players.football_player import FootballPlayer
 
 
 @dataclass
 class FootballTeam(AbstractTeam):
     
-    def __init__(self, team_name, positions, positions_constraints):
-        super().__init__(team_name, positions)
+    def __post_init__(self, positions_constraints: dict = None):
         self.positions_constraints = positions_constraints
         
-    def add_player(self, Player, position):
-        if self.constrain_goalkeeper(position):
+    def add_player(self, Player: FootballPlayer, position: FootballPositions):
+        if self._is_allowed(position):
             super().add_player(Player, position)
-        
-    def remove_player(self, Player):
-        super().remove_player(Player)
 
-    def _update_team_stats(self, action: str, position_name, position_score):
-        super()._update_team_stats(action, position_name, position_score)
-
-    def constrain_goalkeeper(self, position: FootballPositions):
-        position_name = position.get_position_name()
-        player_count = len(self.rooster[position_name])
-        player_limit = self.positions_constraints[position_name]
-        if player_limit is not None:
-            if player_limit <= player_count:
-                print(f"Player limit does not permit to assign given Player to <{position_name}> role.")
-                return 0
-        return 1
+    def _is_allowed(self, position: FootballPositions) -> bool:
+        player_count = len(self.rooster[position.name])
+        if self.positions_constraints is not None:
+            player_limit = self.positions_constraints.get(position.name)
+            if player_limit is not None:
+                return player_limit > player_count
+        return True

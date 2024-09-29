@@ -1,15 +1,15 @@
 class DictionaryOperator:
 
     def __init__(self):
-        self.__obj_dict = dict()
+        self._obj_dict = dict()
 
-    def add_into_dictionary(self, **kwargs):
+    def add_into_dictionary(self, **kwargs) -> None:
         if "assign" in kwargs:
-            self.__obj_dict = kwargs["p"]
+            self._obj_dict = kwargs["p"]
         else:
             if "key" in kwargs and "value" in kwargs:
                 item_key = kwargs["key"]
-                self.__obj_dict[item_key] = kwargs["value"]
+                self._obj_dict[item_key] = kwargs["value"]
 
-    def get_dictionary(self):
-        return self.__obj_dict
+    def get_dictionary(self) -> dict:
+        return self._obj_dict

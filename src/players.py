@@ -1,12 +1,9 @@
 from dataclasses import dataclass
-from src.positions import Positions
-from src.player_scores import PlayerScores
-from src.utils.dict_operation import DictionaryOperator
+from src.enums.positions import FootballPositions
+from src.enums.scores import Scores
 
 
 @dataclass
 class Player:
     name: str
-    positions: dict[Positions, PlayerScores]
-
-
+    positions: dict[FootballPositions, Scores]

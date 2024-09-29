@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PlayerScores(Enum):
+class Scores(Enum):
     ONE = 1
     TWO = 2
     THREE = 3
